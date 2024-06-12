@@ -559,6 +559,7 @@ export class ConfirmedRideComponent {
     // event.stopPropagation();
     let result: string = null;
     console.log('ridestatus to update->', ridestatus);
+    let driverid:string='';
 
     switch (ridestatus) {
       case 0:
@@ -566,24 +567,35 @@ export class ConfirmedRideComponent {
         break;
       case 3:
         result = 'arrive';
+        driverid = driver._id;
         break;
 
       case 4:
         result = 'pickup';
+        driverid = driver._id;
+
         break;
 
       case 5:
         result = 'complete';
+        driverid = driver._id;
+
         break;
     }
-    let driverid:string=driver._id
- 
-    console.log('driver-->>>', driver);
+    
+ if(ridestatus == 0){
+  let confirmation = confirm('Are you sure You want to cancel this Ride : '+rideid);
+    if(!confirmation){
+      return
+    }
+ }
+    console.log('driver-->>>', driverid);
     if (result === null) {
       console.warn('RETURNED DUE TO INVALID CLICKK------------');
       return;
     }
-
+    console.log("CANCEL--->>>>RIDEID",rideid, "DRIVERID",driverid,"RESULT",result);
+    
     this.updateStatus(result,rideid,driverid)
    
   }

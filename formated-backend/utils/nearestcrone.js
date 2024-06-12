@@ -4,9 +4,6 @@ const DriverModel = require("../models/driver");
 const cron = require("node-cron");
 const { cronefnsimple } = require("./crone");
 
-
-
-
 // Define the cron job to run every 10 seconds
 const job = cron.schedule(
   "*/1 * * * * *",
@@ -18,15 +15,9 @@ const job = cron.schedule(
   },
   { scheduled: false }
 );
-
-// Start the cron job
-// job.start();
-
+job.start()
 const cronefn = async () => {
-  //check every crone timeout second
   try {
-
-
     const pipeline = [
       {
         $lookup: {
@@ -106,13 +97,14 @@ const cronefn = async () => {
           as: "availableDrivers",
         },
       },
-      {
-        $addFields: {
-          oldDriver: "$driver",
-        },
-      },
+      // {
+      //   $addFields: {
+      //     oldDriver: "$driver",
+      //   },
+      // },
       {
         $set: {
+              oldDriver: "$driver",
           driver: {
             $ifNull: [{ $arrayElemAt: ["$availableDrivers._id", 0] }, null],
           },
@@ -181,7 +173,6 @@ const cronefn = async () => {
         },
       },
     ];
-
 
     const AlldataArray = await CreateRideModel.aggregate(pipeline);
     if (AlldataArray.length === 0) {

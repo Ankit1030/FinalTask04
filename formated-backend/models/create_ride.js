@@ -25,10 +25,10 @@ const createRideSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    fromlatlng: {
-        type: String,
-        required: true
-    },
+    // fromlatlng: {
+    //     type: String,
+    //     required: true
+    // },
     
     toLocation: {
         type: String,

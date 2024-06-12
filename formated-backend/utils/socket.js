@@ -3,7 +3,7 @@ const { Server } = require('socket.io');
 const login = require('../controllers/login');
 const {getAllfreeDrivers} = require('../controllers/rides/confirmed_ride')
 
-global.counter = 5;
+global.counter = 0;
 global.incrementNotification = function() {
 
     
