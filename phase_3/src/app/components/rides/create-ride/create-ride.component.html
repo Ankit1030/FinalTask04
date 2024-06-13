@@ -242,20 +242,6 @@
               <div class="text-danger" *ngIf="BookingrideForm.get('DateTime')?.hasError('pastDate') && BookingrideForm.get('DateTime')?.touched">
                 Date and Time cannot be in the past
               </div>
-              <!-- <label for="date" class="form-label">Date:</label>
-              <input type="datetime-local" formControlName="date" id="date" [min]="minDate" 
-              (change)="onselectedate()" class="form-control">
-                 <h4>{{selectedDate}}</h4>
-                </div>
-                <div class="mb-3">
-                  <label for="time" class="form-label">Time:</label>
-                  <input type="time" formControlName="time" id="time"  class="form-control"
-                  (change)="onselectetime()" [min]="minTime">
-                  <h4>{{selectedTime}}</h4>
-                  <h2>isDateandTimeValid: {{isDateandTimeValid}}</h2>
-                  <div class="text-danger" *ngIf="BookingrideForm.get('time').errors?.['pastTime']">
-                    Please select a future time.
-                  </div> -->
             </div>
           }
           <div class="row d-flex justify-content-around align-items-center ">

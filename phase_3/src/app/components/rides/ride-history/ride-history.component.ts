@@ -68,6 +68,7 @@ export class RideHistoryComponent {
   map: any;
   @ViewChild('closeButton') closeButton: ElementRef;
   private mybackendUrl = env.backendUrl;
+  // geocoder:any
   get backendUrl(): string {
     return this.mybackendUrl;
   }
@@ -127,10 +128,11 @@ export class RideHistoryComponent {
       this.map = new google.maps.Map(
         document.getElementById('map') as HTMLElement,
         {
-          zoom: 5,
+          zoom: 10,
           center: { lat: result.latitude, lng: result.longitude },
         }
       );
+      this.geocoder = new google.maps.Geocoder();
     });
   }
 
@@ -462,18 +464,28 @@ export class RideHistoryComponent {
     return null;
   }
 
-  addMarkers(map: any, coords: { lat: number; lng: number }[]): void {
+  addMarkers( coords: { lat: number; lng: number }[]): void {
     const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    coords.forEach((coord, index) => {
+    // const bounds = new google.maps.LatLngBounds();
+    coords.forEach((coord:{ lat: number; lng: number }, index:number) => {
       const marker = new google.maps.Marker({
         position: coord,
-        map: map,
+        map: this.map,
         label: labels[index % labels.length],
         color: 'white', // Set the font color to white
         fontWeight: 'bold',
       });
+      // console.log("BOUND before extend",index, bounds);
+      // bounds.extend(coord);
+      // console.log("BOUND after extend",index, bounds);
+      
       this.markerArray.push(marker);
     });
+    // this.map.fitBounds(bounds);
+    console.log('111Current Zoom Level:', this.map.getZoom());
+    // const center = bounds.getCenter();
+    // map.setCenter(center);
+    // map.fitBounds(bounds);
   }
   async showthisMap(data: string[]) {
     console.log('DRAW THIS POLYLINE', data);
@@ -487,61 +499,98 @@ export class RideHistoryComponent {
       this.polyline = null;
     }
     const places = data;
-    const geocoder = new google.maps.Geocoder();
-    const coordinates = await this.convertPlacesToLatLng(data, geocoder);
-    this.addMarkers(this.map, coordinates);
-    this.adjustBounds();
+    // const geocoder = new google.maps.Geocoder();
+    const coordinates = await this.convertPlacesToLatLng(data);
+    console.log("ALL COORDINATEDS--->>>> ",coordinates);
+    
     this.drawPolyline(coordinates);
+    this.addMarkers(coordinates);
+    this.adjustBounds(coordinates);
+    
+    this.polyline.setMap(this.map);
   }
 
   drawPolyline(coordinates: any[]): void {
     this.polyline = new google.maps.Polyline({
       path: coordinates,
-      geodesic: true,
+      // geodesic: true,
       strokeColor: '#FF0000',
       strokeOpacity: 1.0,
       strokeWeight: 2,
     });
 
-    this.polyline.setMap(this.map);
+    // this.polyline.setMap(this.map);
   }
 
-  adjustBounds(): void {
+  adjustBounds(coordinates:{ lat: number; lng: number }[]): void {
     const bounds = new google.maps.LatLngBounds();
-    this.markerArray.forEach((marker) => {
-      bounds.extend(marker.getPosition());
+    coordinates.forEach((marker:{ lat: number; lng: number }) => {
+      bounds.extend(marker);
     });
-    this.map.fitBounds(bounds);
+    this.map.fitBounds(bounds,50);
+    console.log('22Current Zoom Level:', this.map.getZoom());
+
   }
 
-  async convertPlacesToLatLng(places: string[], geocoder: any): Promise<any[]> {
-    const coordinates: any[] = [];
+  // async convertPlacesToLatLng(places: string[]): Promise<any[]> {
+  //   const coordinates: any[] = [];
 
-    // Wrap each geocode call in a Promise
-    const geocodePromises = places.map((place, index) => {
-      return new Promise<void>((resolve, reject) => {
-        geocoder.geocode({ address: place }, (results: any, status: any) => {
+  //   // Wrap each geocode call in a Promise
+  //   const geocodePromises = places.map((place, index) => {
+  //     return new Promise<void>((resolve, reject) => {
+  //       this.geocoder.geocode({ address: place }, (results: any, status: any) => {
+  //         if (status === google.maps.GeocoderStatus.OK) {
+  //           const location = results[0].geometry.location;
+  //           coordinates[index] = { lat: location.lat(), lng: location.lng() };
+  //         } else {
+  //           console.error(
+  //             'Geocode was not successful for the following reason: ' + status
+  //           );
+  //           coordinates[index] = null; // Handle errors or set default coordinates
+  //         }
+  //         resolve();
+  //       });
+  //     });
+  //   });
+
+  //   // Wait for all geocode operations to complete
+  //   await Promise.all(geocodePromises);
+
+  //   // Filter out any null coordinates
+  //   const validCoordinates = coordinates.filter((coord) => coord !== null);
+
+  //   console.log('RETURN ', validCoordinates);
+  //   return validCoordinates;
+  // }
+  async convertPlacesToLatLng(places: string[]): Promise<any[]> {
+    const coordinates: any[] = [];
+  
+    // Function to perform geocoding for a single place
+    const geocodePlace = async (place: string): Promise<any | null> => {
+      return new Promise<void>((resolve:any) => {
+        this.geocoder.geocode({ address: place }, (results: any, status: any) => {
           if (status === google.maps.GeocoderStatus.OK) {
             const location = results[0].geometry.location;
-            coordinates[index] = { lat: location.lat(), lng: location.lng() };
+            resolve({ lat: location.lat(), lng: location.lng() });
           } else {
-            console.error(
-              'Geocode was not successful for the following reason: ' + status
-            );
-            coordinates[index] = null; // Handle errors or set default coordinates
+            console.error('Geocode was not successful for the following reason: ' + status);
+            resolve(null); // Handle errors or set default coordinates
           }
-          resolve();
         });
       });
-    });
-
-    // Wait for all geocode operations to complete
-    await Promise.all(geocodePromises);
-
-    // Filter out any null coordinates
-    const validCoordinates = coordinates.filter((coord) => coord !== null);
-
-    console.log('RETURN', validCoordinates);
+    };
+  
+    // Map each place to a geocoding promise
+    const geocodePromises = places.map(async (place) => await geocodePlace(place));
+  
+    // Execute all geocoding promises concurrently and await all of them
+    const results = await Promise.all(geocodePromises);
+  
+    // Filter out any null results (failed geocodings)
+    const validCoordinates = results.filter((coord) => coord !== null);
+  
+    console.log('RETURN ', validCoordinates);
     return validCoordinates;
   }
+  
 }

@@ -149,8 +149,8 @@
           </td>
           <td>{{ ride.bookDate }} {{ ride.bookTime }}</td>
           <td>
-            <div class="btn text-white" [ngClass]="ride.ridestatus === 6 ? 'btn-success' : 'btn-danger'"
-              style="font-size:14px;">
+            <div class="btn btn-sm text-white" [ngClass]="ride.ridestatus === 6 ? 'btn-success' : 'btn-danger'"
+              style="font-size:12px;">
               @if(ride.ridestatus === 6){
               Completed
               }@else{
@@ -249,7 +249,7 @@
 
           <!---------------------------------INSIDE POPUP-----RIDE DETAILS---------------------------------->
           <!-- <div class="" > -->
-          <h2>Ride Details</h2>
+          <h2 class="text-center align-items-center align-middle">Ride Details</h2>
           <!-- <div class="table-responsive"> -->
           <table *ngIf="ride" id="rideinfo"
             class="table table-responsive table-striped table-hover align-middle table-bordered  ">
@@ -362,7 +362,7 @@
               }
             </tbody>
           </table>
-          <div id="map" class="text-center" style="height: 300px; width: 100%;"></div>
+          <div id="map" class="text-center" style="height: 300px;"></div>
 
           <!-- </div> -->
           <!-- </div> -->
