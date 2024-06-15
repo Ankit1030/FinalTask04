@@ -319,6 +319,8 @@ export class ConfirmedRideComponent {
   }
   acceptRide(){
     this.socketService.listen('acceptRide').subscribe({next:(res:any)=>{
+      console.log("UPDATE ride event is called");
+      
       this.updateButtonname(res._id,res.ridestatus,res.driverDetails)
     }})
   }
@@ -406,8 +408,10 @@ export class ConfirmedRideComponent {
     console.log('INDEX', index, 'name', status, 'driver', driver);
 
     this.allRideArray[index].ridestatus = status;
+// if(driver){
 
-    this.allRideArray[index].driverDetails = driver;
+  this.allRideArray[index].driverDetails = driver;
+  // }
     console.log('ARRAY NEW afterchanged',this.allRideArray[index]);
     
   }

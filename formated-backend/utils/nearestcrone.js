@@ -97,14 +97,14 @@ const cronefn = async () => {
           as: "availableDrivers",
         },
       },
-      // {
-      //   $addFields: {
-      //     oldDriver: "$driver",
-      //   },
-      // },
+      {
+        $addFields: {
+          oldDriver: "$driver",
+        },
+      },
       {
         $set: {
-              oldDriver: "$driver",
+              // oldDriver: "$driver",
           driver: {
             $ifNull: [{ $arrayElemAt: ["$availableDrivers._id", 0] }, null],
           },

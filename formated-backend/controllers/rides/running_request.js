@@ -195,8 +195,8 @@ const AcceptRide = async (req, res) => {
         nearest: false,
         driverArray: [],
       },
-      { new: true, select: "_id ridestatus cityid vehicleid" }
-    );
+      { new: true, select: "_id ridestatus cityid vehicleid driver" }
+    ).populate({path:"driver", select:"dname"});
     console.log("Accept UPDATE RIDE", updateRide);
     if (!updateRide) {
       return res.status(200).json({
@@ -221,7 +221,12 @@ const AcceptRide = async (req, res) => {
         message: "Failed to Accept the  Driver ",
       });
     }
-    global.io.emit("acceptRide", updateRide);
+    const senddata = {
+      _id: updateRide._id,
+      driverDetails: updatedriver,
+      ridestatus: updateRide.ridestatus,
+    };
+    global.io.emit("acceptRide", senddata);
     return res.status(200).json({
       success: true,
       data: updateRide,
