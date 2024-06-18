@@ -47,7 +47,9 @@ const mongo = mongoose.connect(atlas)
     console.log('Error MongoDB connection error:', err);
   });
 
-  
+  app.get('/',(req,res)=>{
+    res.send("Heloo this is my Forst nodejs App on server")
+  })
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/login',login)

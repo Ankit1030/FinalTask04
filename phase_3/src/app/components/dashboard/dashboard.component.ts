@@ -86,7 +86,14 @@ NotificationCounter(){
     
   //   this.subscription.unsubscribe();
   // }
-
+  notify(body: string) {
+    let data: Array<any> = [];
+    data.push({
+      title: 'Driver not Found',
+      alertContent: 'For the Ride ' + body,
+    });
+    this.pushNotificationService.generateNotification(data);
+  }
   Logout(){
     this.authservice.logout()
 
@@ -98,7 +105,7 @@ NotificationCounter(){
 
     this.socketService.listen('setNotification').subscribe({next:(res:any)=>{
       console.log("COUNTER SETNOTIFICATION-->>>>>>>",res);
-
+      this.notify('No Driver Found for the Ride')
       this.notificationNumnber = res;
     }})
   }

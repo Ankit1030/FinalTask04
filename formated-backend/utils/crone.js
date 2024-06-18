@@ -3,14 +3,14 @@ const CreateRideModel = require("../models/create_ride");
 const DriverModel = require("../models/driver");
 const cron = require("node-cron");
 
-const job = cron.schedule(
-  "*/1 * * * * *",
-  () => {
-    cronefn();
-    console.log("Running---------22222----------------------- task...");
-  },
-  { scheduled: false }
-);
+// const job = cron.schedule(
+//   "*/1 * * * * *",
+//   () => {
+//     cronefn();
+//     console.log("Running---------22222----------------------- task...");
+//   },
+//   { scheduled: false }
+// );
 
 const cronefnsimple = async () => {
   try {

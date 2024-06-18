@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     ref:'Country',   
     required: true,
   },
+  new_arr : {
+    type : Array,
+    default : []
+  },
   uphone: {
     type: String,
     required: true,

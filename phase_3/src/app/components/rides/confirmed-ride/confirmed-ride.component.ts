@@ -400,9 +400,9 @@ export class ConfirmedRideComponent {
     if(index === -1){
       return
     }
-    if (status === 0) {
-      this.notify(value);
-    }
+    // if (status === 0) {
+    //   this.notify(value);
+    // }
     console.log("THIs RIDE is ",this.allRideArray[index]);
     
     console.log('INDEX', index, 'name', status, 'driver', driver);
@@ -610,20 +610,20 @@ export class ConfirmedRideComponent {
     .subscribe({
       next: (res: any) => {
         console.log('COMPLETE PAYMENT REQUEST RES', res);
-        if (res.success === true  && res.data.userPayment) {
+        if (res.success === true  && res.data) {
           // if(res.data.userPayment){
 
-            if(  res.data.userPayment.status === 2 && res.data.driverPayment.status ){
+            if(res.data.userPayment.status === 2   ){
               // window.open(res.data.userPayment.link, '_blank');
-              window.location.replace(res.data.userPayment.link);
-            }else if(res.data &&  res.data.userPayment.status  && res.data.driverPayment.status){
+              window.location.replace(res.data?.userPayment.link);
+            }else if(res.data?.userPayment.status  && res.data?.driverPayment.status){
               this.toaster.success(res.message, 'Success');
               // this.router.navigate(['ride-history']);
               this.router.navigate(['dashboard/ride-history']);
           }else{
-            if(res.data &&  res.data.userPayment.status === 3 ){
+            if(res.data?.userPayment.status === 3 ){
               this.toaster.error("Payment Failed To Debit from User", 'Error');
-            }else if(res.data &&  res.data.driverPayment.status == 3){
+            }else if(res.data?.driverPayment.status == 3){
               this.toaster.error("Payment Failed To Driver", 'Error');
 
             }
