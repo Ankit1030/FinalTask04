@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Loader } from '@googlemaps/js-api-loader';
 import {
   FormArray,
   FormBuilder,
@@ -122,19 +123,33 @@ export class CreateRideComponent {
       // console.log(result);
       const place = { lat: result.latitude, lng: result.longitude };
       this.place = place;
-      this.map = new google.maps.Map(
-        document.getElementById('map') as HTMLElement,
-        {
-          zoom: 5,
-          center: place,
-        }
-      );
-    });
+      const loader = new Loader({
+        apiKey: 'AIzaSyDOgtoT8p1B4OkbPdlIly-LWJBtLNN4lZI',
+        libraries: ['places', 'drawing']
+      });
+
+      loader.load().then(() => {
+        const mapEle = document.getElementById('map');
+        if (mapEle) {
+          // Use user's current location as the center
+          this.map = new google.maps.Map(mapEle, {
+            center: place,
+            zoom: 5,
+            styles: []
+          });
+      // this.map = new google.maps.Map(
+      //   document.getElementById('map') as HTMLElement,
+      //   {
+      //     zoom: 5,
+      //     center: place,
+      //   }
+      // );
+    }})
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer();
-  }
+  })}
   ngAfterViewInit(): void {
-    this.loadMap();
+    // this.loadMap();
     console.log('Map has STARTED--------------------------------------');
 
     //Called after every check of the component's view. Applies to components only.
@@ -149,6 +164,7 @@ export class CreateRideComponent {
   minTime: any;
   isDateandTimeValid: boolean;
   ngOnInit(): void {
+    this.loadMap();
     this.waypointsForm = this.fb.group({
       from: ['', Validators.required],
       to: ['', Validators.required],

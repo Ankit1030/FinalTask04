@@ -3,7 +3,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist",
-    // "types":["google.maps"],
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noImplicitOverride": true,

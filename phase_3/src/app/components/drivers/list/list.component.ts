@@ -168,7 +168,11 @@ export class ListComponent {
     // })
     this.get_country_callcodes();
   }
-  async onBankDetailsSubmit() {
+  // static sample(){
+  //   console.log("asdasdasdasdasda");
+    
+  // }
+  async  onBankDetailsSubmit() {
     if (this.bankForm.disabled) {
       this.closeModal();
       this.toaster.warning(

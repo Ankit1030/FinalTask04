@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
+import {Loader} from '@googlemaps/js-api-loader'
+
 import {
   FormBuilder,
   FormControl,
@@ -64,21 +66,43 @@ export class CityComponent {
     private router: Router,
     private formBuilder: FormBuilder,
     private getservice: GetdataService
-  ) {}
-  loadMap() {
+    ) {}
+    loadMap() {
 
     navigator.geolocation.getCurrentPosition((location) => {
       let result = location.coords;
       // console.log(result);
       const place = { lat: result.latitude, lng: result.longitude };
       this.place = place
-      this.map = new google.maps.Map(
-        document.getElementById('map') as HTMLElement,
-        {
-          zoom: 5,
-          center: place,
-        }
-      );
+      const loader = new Loader({
+        apiKey: 'AIzaSyDOgtoT8p1B4OkbPdlIly-LWJBtLNN4lZI',
+        libraries: ['places', 'drawing']
+      });
+
+      loader.load().then(() => {
+        const mapEle = document.getElementById('map') as HTMLElement;
+        if (mapEle) {
+          // Use user's current location as the center
+          this.map = new google.maps.Map(mapEle, {
+            center: place,
+            zoom: 5,
+            // styles: []
+          });
+      // this.map = new google.maps.Map(
+      //   document.getElementById('map') as HTMLElement,
+      //   {
+      //     zoom: 5,
+      //     center: place,
+      //   }
+      // );
+    }})
+      // this.map = new google.maps.Map(
+      //   document.getElementById('map') as HTMLElement,
+      //   {
+      //     zoom: 5,
+      //     center: place,
+      //   }
+      // );
     });
    
   }

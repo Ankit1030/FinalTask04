@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { PushNotificationService } from '../../../services/push-notification/push-notification.service';
 import { env } from '../../../../environments/environment.development';
-
+import { ListComponent } from '../list/list.component';
 // interface Ride {
 //   _id: string;
 //   fromLocation: string;
@@ -83,7 +83,8 @@ export class RunningRequestComponent {
   constructor(private socketService:SocketService, 
     private runningRequestService: RunningRequestService,
     private _notificationService: PushNotificationService,
-    private toaster:ToastrService){
+    private toaster:ToastrService,
+    ){
 
   }
   private mybackendUrl = env.backendUrl;
